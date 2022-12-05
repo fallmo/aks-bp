@@ -1,0 +1,13 @@
+namespace: acme
+
+bases:
+  - ../../template
+
+commonLabels:
+  app.environment: acme
+
+resources:
+  - ./namespace.yaml
+
+patchesStrategicMerge:
+  - ./ingress-host.yaml

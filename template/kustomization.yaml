@@ -1,0 +1,4 @@
+resources:
+  - ./1_network.yaml
+  - ./2_database.yaml
+  - ./3_app.yaml

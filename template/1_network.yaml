@@ -1,27 +1,19 @@
-# namespace
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: namespace1
----
 # default deny all inward traffic
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: default-deny
-  namespace: namespace1
 spec:
   podSelector:
     matchLabels: {}
   policyTypes:
-  - Ingress
+    - Ingress
 ---
 # allow within same namespace
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: allow-same-namespace
-  namespace: namespace1
 spec:
   podSelector: {}
   ingress:
