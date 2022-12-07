@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app
+  namespace: namespace1
+  labels:
+    app: app
+spec:
+  storageClassName: <appropriateStorageClass> 
+  accessModes:
+  - ReadWriteMany # or ReadWriteOnce if only one pod will be running.
+  resources:
+    requests:
+      storage: <size needed>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: namespace1
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      volumes:
+      - name: vol
+        persistentVolumeClaim:
+          claimName: app
+      nodeSelector:
+        kubernetes.io/os: windows
+      containers:
+      - name: app
+        image: <image url>
+        ports:
+        - containerPort: <container port>
+        volumeMounts:
+        - name: vol
+          mountPath: <desired mount path>
+        env: # if it's necessary to pass database connection variables this way
+          - name: DATABASE_HOST
+            value: database # db service name
+          - name: <env key name>
+            valueFrom:
+              secretKeyRef:
+                name: app
+                key: SA_PASSWORD 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: namespace1
+  labels:
+    app: app
+spec:
+  ports:
+    - port: 80
+      targetPort: <container port>
+  selector:
+    app: app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app
+  namespace: namespace1
+  labels:
+    app: app
+spec:
+  ingressClassName: nginx # or whichever ingress the default
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          service:
+            name: app
+            port: 
+              number: 80
