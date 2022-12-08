@@ -49,17 +49,18 @@ spec:
           ports:
             - containerPort: 1433
           volumeMounts:
-            - name: data
-              mountPath: /var/opt/mssql/data
-            - name: log
-              mountPath: /var/opt/mssql/log
             - name: secrets
               mountPath: /var/opt/mssql/secrets
+          volumeDevices:
+            - name: data
+              devicePath: /var/opt/mssql/data
+            - name: log
+              devicePath: /var/opt/mssql/log
   volumeClaimTemplates:
     - metadata:
         name: data
       spec:
-        storageClassName: azurefile # replace
+       # storageClassName: default # replace
         volumeMode: Block # replace
         accessModes:
           - ReadWriteOnce
@@ -69,7 +70,8 @@ spec:
     - metadata:
         name: log
       spec:
-        storageClassName: azurefile # replace
+       # storageClassName: default # replace
+        volumeMode: Block
         accessModes:
           - ReadWriteOnce
         resources:

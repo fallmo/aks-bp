@@ -4,7 +4,7 @@ bases:
   - ../../template
 
 commonLabels:
-  app.environment: acme
+  app.version: acme
 
 resources:
   - ./namespace.yaml

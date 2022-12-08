@@ -5,9 +5,9 @@ metadata:
   labels:
     app: app
 spec:
-  storageClassName: azurefile
+  # storageClassName: azurefile
   accessModes:
-    - ReadWriteMany # or ReadWriteOnce if only one pod will be running.
+    - ReadWriteOnce # or ReadWriteOnce if only one pod will be running.
   resources:
     requests:
       storage: 10Gi
@@ -32,11 +32,11 @@ spec:
         - name: vol
           persistentVolumeClaim:
             claimName: app
-      nodeSelector:
-        kubernetes.io/os: windows
+      # nodeSelector:
+      #   kubernetes.io/os: windows
       containers:
         - name: app
-          image: imgurl # replace
+          image: <image> # replace
           ports:
             - containerPort: 80
           volumeMounts:
@@ -78,6 +78,7 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
               service:
                 name: app
